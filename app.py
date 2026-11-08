@@ -197,6 +197,9 @@ button:disabled {
 <div class="controls">
     <input id="message" placeholder="Ask AI 53 anything..."
       onkeydown="if(event.key==='Enter') sendMessage()">
+
+    <button type="button" onclick="startVoice()">🎙️</button>
+
     <button id="send" onclick="sendMessage()">SEND ➤</button>
 </div>
 
