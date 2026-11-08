@@ -205,7 +205,30 @@ button:disabled {
 
 <script>
 let previousId = null;
+function startVoice() {
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
 
+    if (!SpeechRecognition) {
+        alert("Voice recognition Chrome mein available nahi hai.");
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-GB";
+    recognition.interimResults = false;
+
+    recognition.onresult = function(event) {
+        document.getElementById("message").value =
+            event.results[0][0].transcript;
+    };
+
+    recognition.onerror = function() {
+        alert("Microphone check karein aur dobara try karein.");
+    };
+
+    recognition.start();
+}
 async function sendMessage() {
     const input = document.getElementById("message");
     const chat = document.getElementById("chat");
