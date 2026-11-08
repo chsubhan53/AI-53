@@ -272,7 +272,25 @@ async function sendMessage() {
         }
 
         loading.textContent = "53: " + (data.reply || "Koi jawab nahi mila.");
+if ("speechSynthesis" in window && data.reply) {
+    window.speechSynthesis.cancel();
 
+    const speech = new SpeechSynthesisUtterance(data.reply);
+    speech.lang = "en-GB";
+    speech.rate = 1;
+    speech.pitch = 1.1;
+
+    const voices = window.speechSynthesis.getVoices();
+    const femaleVoice = voices.find(v =>
+        /female|zira|susan|samantha|google uk english female/i.test(v.name)
+    );
+
+    if (femaleVoice) {
+        speech.voice = femaleVoice;
+    }
+
+    window.speechSynthesis.speak(speech);
+}
         if (data.id) previousId = data.id;
 
     } catch (error) {
