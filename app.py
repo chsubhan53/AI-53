@@ -207,7 +207,44 @@ button:disabled {
 </div>
 
 <script>
-let previousId = null;
+let previousId = localStorage.getItem("ai53_previous_id") || null;
+
+const chat = document.getElementById("chat");
+
+// Purani chats load karein
+function loadHistory() {
+    const saved = JSON.parse(localStorage.getItem("ai53_history") || "[]");
+
+    if (saved.length > 0) {
+        chat.innerHTML = "";
+
+        saved.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "message " + item.role;
+            div.textContent = item.text;
+            chat.appendChild(div);
+        });
+
+        chat.scrollTop = chat.scrollHeight;
+    }
+}
+
+// Chat ko browser mein save karein
+function saveHistory() {
+    const messages = [];
+
+    chat.querySelectorAll(".message").forEach(item => {
+        messages.push({
+            role: item.classList.contains("user") ? "user" : "bot",
+            text: item.textContent
+        });
+    });
+
+    localStorage.setItem("ai53_history", JSON.stringify(messages));
+}
+
+loadHistory();
+
 function startVoice() {
     const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -232,9 +269,9 @@ function startVoice() {
 
     recognition.start();
 }
+
 async function sendMessage() {
     const input = document.getElementById("message");
-    const chat = document.getElementById("chat");
     const button = document.getElementById("send");
     const message = input.value.trim();
 
@@ -246,6 +283,7 @@ async function sendMessage() {
     chat.appendChild(user);
 
     input.value = "";
+    saveHistory();
 
     const loading = document.createElement("div");
     loading.className = "message bot";
@@ -272,29 +310,38 @@ async function sendMessage() {
         }
 
         loading.textContent = "53: " + (data.reply || "Koi jawab nahi mila.");
-if ("speechSynthesis" in window && data.reply) {
-    window.speechSynthesis.cancel();
 
-    const speech = new SpeechSynthesisUtterance(data.reply);
-    speech.lang = "en-GB";
-    speech.rate = 1;
-    speech.pitch = 1.1;
+        if (data.id) {
+            previousId = data.id;
+            localStorage.setItem("ai53_previous_id", previousId);
+        }
 
-    const voices = window.speechSynthesis.getVoices();
-    const femaleVoice = voices.find(v =>
-        /female|zira|susan|samantha|google uk english female/i.test(v.name)
-    );
+        if ("speechSynthesis" in window && data.reply) {
+            window.speechSynthesis.cancel();
 
-    if (femaleVoice) {
-        speech.voice = femaleVoice;
-    }
+            const speech = new SpeechSynthesisUtterance(data.reply);
+            speech.lang = "en-GB";
+            speech.rate = 1;
+            speech.pitch = 1.1;
 
-    window.speechSynthesis.speak(speech);
-}
-        if (data.id) previousId = data.id;
+            const voices = window.speechSynthesis.getVoices();
+            const femaleVoice = voices.find(v =>
+                /female|zira|susan|samantha|google uk english female/i.test(v.name)
+            );
+
+            if (femaleVoice) {
+                speech.voice = femaleVoice;
+            }
+
+            window.speechSynthesis.speak(speech);
+        }
+
+        saveHistory();
 
     } catch (error) {
         loading.textContent = "53: " + error.message;
+        saveHistory();
+
     } finally {
         button.disabled = false;
         input.focus();
