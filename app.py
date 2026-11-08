@@ -6,7 +6,7 @@ from google import genai
 
 app = Flask(__name__)
 
-MODEL = "gemini-3.8-flash"
+MODEL = "gemini-3.5-flash-lite"
 
 HTML = """
 <!DOCTYPE html>
