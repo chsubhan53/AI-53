@@ -385,7 +385,9 @@ def chat():
 
         if previous_id:
             options["previous_interaction_id"] = previous_id
-options["tools"] = [{"google_search": {}}]
+
+        options["tools"] = [{"google_search": {}}]
+
         result = client.interactions.create(**options)
 
         return jsonify({
@@ -395,6 +397,8 @@ options["tools"] = [{"google_search": {}}]
 
     except Exception as error:
         return jsonify({"error": "AI error: " + str(error)}), 500
+
+
 @app.route("/manifest.json")
 def manifest():
     return send_from_directory(
@@ -402,6 +406,8 @@ def manifest():
         "manifest.json",
         mimetype="application/manifest+json"
     )
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
