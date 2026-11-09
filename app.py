@@ -209,6 +209,12 @@ button:disabled {
 </div>
 
 <script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js")
+            .catch(error => console.error("Service Worker error:", error));
+    });
+}
 let previousId = localStorage.getItem("ai53_previous_id") || null;
 
 const chat = document.getElementById("chat");
@@ -406,7 +412,17 @@ def manifest():
         "manifest.json",
         mimetype="application/manifest+json"
     )
+@app.route("/service-worker.js")
+def service_worker():
+    return Response("""
+self.addEventListener('install', event => {
+    self.skipWaiting();
+});
 
+self.addEventListener('activate', event => {
+    event.waitUntil(self.clients.claim());
+});
+""", mimetype="application/javascript")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
