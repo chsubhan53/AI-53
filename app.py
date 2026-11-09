@@ -1,6 +1,6 @@
 
 import os
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template_string, send_from_directory, Response
 from google import genai
 
 app = Flask(__name__)
@@ -15,6 +15,8 @@ HTML = """
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI 53 - Personal Assistant</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#007bff">
 <style>
 * { box-sizing: border-box; }
 
@@ -393,7 +395,13 @@ options["tools"] = [{"google_search": {}}]
 
     except Exception as error:
         return jsonify({"error": "AI error: " + str(error)}), 500
-
+@app.route("/manifest.json")
+def manifest():
+    return send_from_directory(
+        os.path.dirname(__file__),
+        "manifest.json",
+        mimetype="application/manifest+json"
+    )
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
