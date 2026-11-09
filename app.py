@@ -412,6 +412,25 @@ def manifest():
         "manifest.json",
         mimetype="application/manifest+json"
     )
+
+
+
+
+@app.route("/icon-512.png")
+def app_icon():
+    return send_from_directory(
+        os.path.dirname(__file__),
+        "icon-512.png",
+        mimetype="image/png"
+    )
+
+@app.route("/launchericon-512x512.png")
+def launcher_icon():
+    return send_from_directory(
+        os.path.dirname(__file__),
+        "launchericon-512x512.png",
+        mimetype="image/png"
+    )
 @app.route("/service-worker.js")
 def service_worker():
     return Response("""
