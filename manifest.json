@@ -9,9 +9,14 @@
   "start_url": "https://ai-53.vercel.app/",
   "theme_color": "#007bff",
   "lang": "en",
-  "display_override": [
-    "window-controls-overlay"
-  ],
   "id": "ai-53",
-  "description": "AI 53 is your smart AI assistant for chatting, asking questions and getting help.\nch_subhan53"
+  "description": "AI 53 is your smart AI assistant for chatting, asking questions and getting help. ch_subhan53",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
