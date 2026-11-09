@@ -1,0 +1,17 @@
+{
+  "background_color": "#071426",
+  "dir": "auto",
+  "display": "standalone",
+  "name": "AI 53",
+  "orientation": "any",
+  "scope": "https://ai-53.vercel.app/",
+  "short_name": "AI 53",
+  "start_url": "https://ai-53.vercel.app/",
+  "theme_color": "#007bff",
+  "lang": "en",
+  "display_override": [
+    "window-controls-overlay"
+  ],
+  "id": "ai-53",
+  "description": "AI 53 is your smart AI assistant for chatting, asking questions and getting help.\nch_subhan53"
+}
