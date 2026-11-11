@@ -392,7 +392,7 @@ def chat():
         if previous_id:
             options["previous_interaction_id"] = previous_id
 
-        options["tools"] = [{"google_search": {}}]
+        options["tools"] = [{"type": "google_search"}]
 
         result = client.interactions.create(**options)
 
