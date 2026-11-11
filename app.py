@@ -1,6 +1,6 @@
 
 import os
-from flask import Flask, request, jsonify, render_template_string, send_from_directory, Response
+from flask import Flask, request, jsonify, render_template_string
 from google import genai
 
 app = Flask(__name__)
@@ -15,8 +15,6 @@ HTML = """
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI 53 - Personal Assistant</title>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#007bff">
 <style>
 * { box-sizing: border-box; }
 
@@ -209,12 +207,6 @@ button:disabled {
 </div>
 
 <script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/service-worker.js")
-            .catch(error => console.error("Service Worker error:", error));
-    });
-}
 let previousId = localStorage.getItem("ai53_previous_id") || null;
 
 const chat = document.getElementById("chat");
@@ -392,8 +384,6 @@ def chat():
         if previous_id:
             options["previous_interaction_id"] = previous_id
 
-        options["tools"] = [{"type": "google_search"}]
-
         result = client.interactions.create(**options)
 
         return jsonify({
@@ -403,45 +393,6 @@ def chat():
 
     except Exception as error:
         return jsonify({"error": "AI error: " + str(error)}), 500
-
-
-@app.route("/manifest.json")
-def manifest():
-    return send_from_directory(
-        os.path.dirname(__file__),
-        "manifest.json",
-        mimetype="application/manifest+json"
-    )
-
-
-
-
-@app.route("/icon-512.png")
-def app_icon():
-    return send_from_directory(
-        os.path.dirname(__file__),
-        "icon-512.png",
-        mimetype="image/png"
-    )
-
-@app.route("/launchericon-512x512.png")
-def launcher_icon():
-    return send_from_directory(
-        os.path.dirname(__file__),
-        "launchericon-512x512.png",
-        mimetype="image/png"
-    )
-@app.route("/service-worker.js")
-def service_worker():
-    return Response("""
-self.addEventListener('install', event => {
-    self.skipWaiting();
-});
-
-self.addEventListener('activate', event => {
-    event.waitUntil(self.clients.claim());
-});
-""", mimetype="application/javascript")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
