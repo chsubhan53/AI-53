@@ -617,7 +617,7 @@ def chat():
     if not contents or contents[-1].role != "user":
         return jsonify({"error": "Message khali hai."}), 400
 
-    client = get_client()
+client = get_client()
     if client is None:
         return jsonify({"error": "GEMINI_API_KEY configure nahi hai."}), 500
 
@@ -629,6 +629,9 @@ def chat():
                 config=types.GenerateContentConfig(
                     system_instruction=SYSTEM_PROMPT,
                     temperature=0.8,
+                    tools=[
+                        types.Tool(google_search=types.GoogleSearch())
+                    ],
                 ),
             )
             got = False
