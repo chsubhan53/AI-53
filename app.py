@@ -629,9 +629,7 @@ def chat():
                 config=types.GenerateContentConfig(
                     system_instruction=SYSTEM_PROMPT,
                     temperature=0.8,
-                    tools=[
-                        types.Tool(google_search=types.GoogleSearch())
-                    ],
+                   
                 ),
             )
             got = False
