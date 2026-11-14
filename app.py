@@ -2,9 +2,33 @@ import os
 from flask import Flask, request, jsonify, Response, stream_with_context
 from google import genai
 from google.genai import types
-
+from tavily import TavilyClient
 app = Flask(__name__)
+TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
+def search_web(query):
+    if not TAVILY_API_KEY:
+        return "Tavily API key configure nahi hai."
 
+    try:
+        tavily = TavilyClient(api_key=TAVILY_API_KEY)
+        response = tavily.search(
+            query=query,
+            search_depth="basic",
+            max_results=5
+        )
+
+        results = []
+        for item in response.get("results", []):
+            results.append(
+                f"Title: {item.get('title')}\n"
+                f"URL: {item.get('url')}\n"
+                f"Content: {item.get('content')}"
+            )
+
+        return "\n\n".join(results) if results else "Koi result nahi mila."
+
+    except Exception as error:
+        return f"Search error: {error}"
 # ---------------- Settings ----------------
 MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 ACCESS_KEY = os.environ.get("ACCESS_KEY", "")  # optional: set this to protect /chat
@@ -623,23 +647,52 @@ def chat():
 
     def generate():
         try:
+            # User ka latest message
+            user_query = contents[-1].parts[0].text
+
+            # Internet search ki zaroorat check karo
+            search_words = [
+                "search", "internet", "latest", "today",
+                "news", "current", "price", "weather",
+                "website", "online", "recent", "2026",
+                "google", "find", "look up",
+                "search karo", "internet se", "aaj ki",
+                "taza khabar", "latest news", "rate kya",
+                "price kya", "maloomat dhoondo"
+            ]
+
+            system_prompt = SYSTEM_PROMPT
+
+            if any(word in user_query.lower() for word in search_words):
+                search_results = search_web(user_query)
+
+                system_prompt += (
+                    "\n\nWEB SEARCH RESULTS:\n"
+                    + search_results
+                    + "\n\nUse these search results to answer accurately. "
+                    "Include relevant source URLs in your answer. "
+                    "If results are insufficient, say so honestly."
+                )
+
             stream = client.models.generate_content_stream(
                 model=MODEL,
                 contents=contents,
                 config=types.GenerateContentConfig(
-                    system_instruction=SYSTEM_PROMPT,
+                    system_instruction=system_prompt,
                     temperature=0.8,
-                   
                 ),
             )
+
             got = False
             for chunk in stream:
                 text = chunk.text
                 if text:
                     got = True
                     yield text
+
             if not got:
                 yield "Koi jawab nahi mila."
+
         except Exception as error:
             yield "\n\nAI error: " + str(error)
 
