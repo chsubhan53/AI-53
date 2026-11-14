@@ -73,66 +73,73 @@ HTML = r"""<!DOCTYPE html>
 <title>AI 53 - Personal Assistant</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 <style>
-:root { --accent: #2d8cff; }
+:root { --accent: #1e90ff; --cyan: #19c3ff; }
 html[data-theme="dark"] {
-  --bg:#212121; --side:#171717; --panel:#2f2f2f; --text:#ececec;
-  --muted:#9b9b9b; --border:#383838; --hover:#2a2a2a; --user:#303030;
+  --bg:#050a1c; --side:#07102a; --side2:#0a2a70; --panel:#0b1736; --card:#0b1736; --box:#08122e;
+  --text:#f2f6ff; --muted:#9fb0d8; --border:#1b2a58; --hover:#10204a; --user:#12306e; --glow:rgba(30,144,255,.35);
 }
 html[data-theme="light"] {
-  --bg:#ffffff; --side:#f9f9f9; --panel:#f4f4f4; --text:#0d0d0d;
-  --muted:#6b6b6b; --border:#e3e3e3; --hover:#ececec; --user:#efefef;
+  --bg:#f4f7ff; --side:#ffffff; --side2:#dbe8ff; --panel:#ffffff; --card:#ffffff; --box:#ffffff;
+  --text:#0b1330; --muted:#5b6a90; --border:#d5def5; --hover:#e8eefc; --user:#dbe8ff; --glow:rgba(30,144,255,.2);
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
 body {
   background: var(--bg); color: var(--text); font-size: 16px;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Nastaliq Urdu", Arial, sans-serif;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Nastaliq Urdu", Arial, sans-serif;
 }
 button { font-family: inherit; color: inherit; cursor: pointer; }
 .app { display: flex; height: 100vh; height: 100dvh; }
 
 /* Sidebar */
 aside {
-  width: 270px; background: var(--side); display: flex; flex-direction: column;
-  padding: 10px; gap: 8px; border-right: 1px solid var(--border); flex-shrink: 0;
+  width: 250px; background: linear-gradient(180deg, var(--side) 0%, var(--side) 60%, var(--side2) 130%);
+  display: flex; flex-direction: column; padding: 20px 16px; gap: 8px;
+  border-right: 1px solid var(--border); flex-shrink: 0;
 }
-.brand { display:flex; align-items:center; gap:10px; padding: 6px 8px 10px; font-weight:700; letter-spacing:1px; }
-.brand .dot { width:26px; height:26px; border-radius:50%;
-  background: radial-gradient(circle at 35% 30%, #fff, #63c9ff 20%, #1769d8 55%, #061b4b 90%); }
+.brand { display:flex; align-items:center; gap:10px; font-size:24px; font-weight:700; padding: 0 4px 6px; }
+.brand b { color: var(--accent); }
 #newChat {
-  display:flex; align-items:center; gap:8px; width:100%; padding:10px 12px;
-  background: transparent; border:1px solid var(--border); border-radius:12px; font-size:14px;
+  display:flex; align-items:center; justify-content:center; gap:8px; width:100%; height:46px;
+  margin-top:14px; border:0; border-radius:30px; font-size:15px; font-weight:600; color:#fff;
+  background: linear-gradient(90deg,#1478ff,#1aa6ff); box-shadow: 0 0 22px var(--glow);
 }
-#newChat:hover, .side-btn:hover { background: var(--hover); }
-#chatList { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:2px; margin-top:4px; }
+#newChat:hover { filter: brightness(1.1); }
+#chatList { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:2px; margin-top:10px;
+  border-top:1px solid var(--border); padding-top:12px; }
+.empty-hist { color:var(--muted); font-size:14px; padding:8px 6px; display:flex; gap:10px; align-items:center; }
 .chat-item {
-  display:flex; align-items:center; gap:6px; padding:9px 10px; border-radius:10px;
-  cursor:pointer; font-size:14px;
+  display:flex; align-items:center; gap:6px; padding:9px 10px; border-radius:12px;
+  cursor:pointer; font-size:14px; color: var(--muted);
 }
-.chat-item:hover { background: var(--hover); }
-.chat-item.active { background: var(--panel); }
+.chat-item:hover { background: var(--hover); color: var(--text); }
+.chat-item.active { background: var(--panel); color: var(--text); border:1px solid var(--border); }
 .chat-item .t { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .chat-item .del { opacity:0; background:none; border:0; color:var(--muted); font-size:13px; padding:2px 6px; }
 .chat-item:hover .del, .chat-item.active .del { opacity:1; }
 .chat-item .del:hover { color:#ff6b6b; }
-.side-bottom { display:flex; flex-direction:column; gap:2px; border-top:1px solid var(--border); padding-top:8px; }
-.side-btn { background:none; border:0; text-align:left; padding:9px 10px; border-radius:10px; font-size:14px; }
+.side-bottom { display:flex; flex-direction:column; gap:2px; border-top:1px solid var(--border); padding-top:12px; }
+.side-btn { background:none; border:0; text-align:left; padding:10px; border-radius:10px; font-size:15px; }
+.side-btn:hover { background: var(--hover); }
 
 /* Main */
-main { flex:1; display:flex; flex-direction:column; min-width:0; }
-header {
-  display:flex; align-items:center; gap:10px; padding:10px 14px;
-  border-bottom:1px solid var(--border);
+main {
+  flex:1; display:flex; flex-direction:column; min-width:0;
+  background:
+    radial-gradient(ellipse at 92% 15%, rgba(11,58,154,.45), transparent 45%),
+    radial-gradient(ellipse at 15% 0%, rgba(10,42,122,.35), transparent 40%),
+    var(--bg);
 }
-header .title { font-weight:700; letter-spacing:2px; }
+header { display:flex; align-items:center; gap:10px; padding:16px 24px; }
+header .title { font-weight:700; font-size:20px; }
 header .sp { flex:1; }
 header select {
-  background: var(--panel); color: var(--text); border:1px solid var(--border);
-  border-radius:8px; padding:6px 8px; font-size:13px;
+  background: var(--box); color: var(--text); border:1px solid var(--border);
+  border-radius:30px; padding:8px 14px; font-size:14px; outline:0;
 }
 #menuBtn { display:none; background:none; border:0; font-size:22px; padding:0 6px; }
 #messages { flex:1; overflow-y:auto; }
-.inner { max-width:780px; margin:0 auto; padding:18px 16px 10px; }
+.inner { max-width:800px; margin:0 auto; padding:10px 16px; }
 
 .row { display:flex; gap:12px; margin:20px 0; }
 .row.user { justify-content:flex-end; }
@@ -152,7 +159,7 @@ header select {
 .md ul, .md ol { padding-inline-start:1.5em; margin:.6em 0; }
 .md li { margin:.25em 0; }
 .md h1,.md h2,.md h3,.md h4 { margin:1.1em 0 .4em; line-height:1.3; }
-.md a { color: var(--accent); }
+.md a { color: var(--cyan); }
 .md blockquote { margin:.8em 0; padding:.2em 1em; border-inline-start:3px solid var(--border); color:var(--muted); }
 .md table { border-collapse:collapse; display:block; overflow-x:auto; margin:.8em 0; }
 .md th, .md td { border:1px solid var(--border); padding:6px 12px; }
@@ -172,42 +179,58 @@ header select {
 body.streaming .row:last-child .actions { display:none; }
 
 /* Welcome */
-.welcome { text-align:center; padding-top:9vh; }
-.welcome .orb {
-  width:84px; height:84px; margin:0 auto 14px; border-radius:50%;
-  background: radial-gradient(circle at 35% 30%, #fff, #63c9ff 18%, #1769d8 48%, #061b4b 75%);
-  box-shadow: 0 0 20px #168bff, 0 0 45px #087bff55;
-  animation: pulse 3s infinite ease-in-out;
+.welcome { display:flex; flex-direction:column; align-items:center; text-align:center; padding-top:3vh; }
+.planet { position:relative; width:220px; height:150px; margin-bottom:6px; }
+.planet .orb {
+  position:absolute; left:68px; top:24px; width:84px; height:84px; border-radius:50%;
+  background: radial-gradient(circle at 35% 30%, #8fdcff, #1e90ff 45%, #0a3fb5 80%);
+  box-shadow: 0 0 45px rgba(30,144,255,.7); animation: pulse 3s infinite ease-in-out;
 }
-@keyframes pulse { 0%,100% { transform:scale(1) } 50% { transform:scale(1.07) } }
-.welcome h1 { margin:0; letter-spacing:5px; }
-.welcome p { color:var(--muted); margin:8px 0 26px; }
-.chips { display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:600px; margin:0 auto; }
+.planet .ring {
+  position:absolute; left:0; top:38px; width:220px; height:70px; border:2px solid #2a8dff;
+  border-radius:50%; transform:rotate(-22deg); box-shadow:0 0 14px rgba(30,144,255,.55);
+}
+@keyframes pulse { 0%,100% { transform:scale(1) } 50% { transform:scale(1.06) } }
+.welcome h1 { margin:0; font-size:52px; font-weight:800; letter-spacing:1px; line-height:1.1; }
+.welcome h1 span { color: var(--accent); }
+.welcome p { color:var(--muted); font-size:20px; font-weight:300; margin:8px 0 0; }
+.welcome p b { color: var(--cyan); font-weight:400; }
+.uline { width:140px; height:3px; border-radius:3px; margin:10px auto 26px;
+  background: linear-gradient(90deg, transparent, #6a5cff, transparent); }
+.chips { display:grid; grid-template-columns:1fr 1fr; gap:14px; width:min(760px,100%); }
 .chips button {
-  background:transparent; border:1px solid var(--border); border-radius:14px;
-  padding:12px 14px; font-size:14px; text-align:left;
+  display:flex; align-items:center; gap:14px; min-height:68px; padding:12px 16px;
+  background: var(--card); border:1px solid var(--border); border-radius:20px;
+  font-size:15px; text-align:left;
 }
-.chips button:hover { background: var(--hover); }
+.chips button:hover { border-color: var(--accent); box-shadow: 0 0 16px var(--glow); }
+.chips .ic { font-size:26px; width:34px; text-align:center; flex-shrink:0; }
+.chips .t { flex:1; }
+.chips .arr { width:32px; height:32px; border-radius:50%; background: var(--hover); color:#4db3ff;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 
 /* Composer */
 .composer { padding:8px 16px 12px; }
 .box {
-  max-width:780px; margin:0 auto; display:flex; align-items:flex-end; gap:6px;
-  background: var(--panel); border:1px solid var(--border); border-radius:26px; padding:8px 8px 8px 18px;
+  max-width:900px; margin:0 auto; display:flex; align-items:flex-end; gap:8px;
+  border:2px solid transparent; border-radius:36px; padding:10px 12px 10px 24px;
+  background: linear-gradient(var(--box), var(--box)) padding-box,
+              linear-gradient(90deg, #19c3ff, #6a5cff) border-box;
 }
-.box:focus-within { border-color: var(--accent); }
 textarea {
   flex:1; resize:none; border:0; outline:0; background:transparent; color:inherit;
-  font:inherit; line-height:1.5; max-height:200px; padding:8px 0;
+  font:inherit; font-size:16px; line-height:1.5; max-height:200px; padding:8px 0;
 }
-.rb { width:38px; height:38px; border-radius:50%; border:0; font-size:17px; flex-shrink:0;
+textarea::placeholder { color: var(--muted); }
+.rb { width:40px; height:40px; border-radius:50%; border:0; font-size:18px; flex-shrink:0;
   display:flex; align-items:center; justify-content:center; background:transparent; }
 .rb:hover { background: var(--hover); }
 #micBtn.on { background:#ff4d4d; color:#fff; animation: blink 1s infinite; }
-#sendBtn { background: var(--accent); color:#fff; }
+#sendBtn { width:48px; height:48px; color:#fff; font-size:20px;
+  background: radial-gradient(circle at 30% 30%, #33c1ff, #1478ff); box-shadow: 0 0 20px var(--glow); }
 #sendBtn:hover { filter:brightness(1.1); }
-#sendBtn.stop { background: var(--text); color: var(--bg); }
-.note { text-align:center; color:var(--muted); font-size:12px; margin-top:8px; }
+#sendBtn.stop { background: var(--text); color: var(--bg); box-shadow:none; }
+.note { text-align:center; color:var(--muted); font-size:13px; margin-top:10px; }
 
 #overlay { display:none; }
 @media (max-width: 800px) {
@@ -218,14 +241,20 @@ textarea {
   #menuBtn { display:inline-flex; }
   .chips { grid-template-columns:1fr; }
   .bubble { max-width:90%; }
+  .welcome h1 { font-size:40px; }
+  .welcome p { font-size:17px; }
+  header { padding:12px 14px; }
 }
 </style>
 </head>
 <body>
 <div class="app">
   <aside>
-    <div class="brand"><span class="dot"></span> AI 53</div>
-    <button id="newChat">＋ New chat</button>
+    <div class="brand">
+      <svg width="40" height="34" viewBox="0 0 64 54"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4fd1ff"/><stop offset="1" stop-color="#1457ff"/></linearGradient></defs><path d="M30 2 L58 50 H44 L30 24 L16 50 H2 Z" fill="url(#lg)"/></svg>
+      <span>AI <b>53</b></span>
+    </div>
+    <button id="newChat">＋ New chat ✎</button>
     <div id="chatList"></div>
     <div class="side-bottom">
       <button class="side-btn" id="themeBtn">🌓 Theme badlein</button>
@@ -240,9 +269,9 @@ textarea {
       <div class="title">AI 53</div>
       <div class="sp"></div>
       <select id="voiceLang" title="Voice language">
-        <option value="en-US">🎙 English</option>
-        <option value="ur-PK">🎙 اردو</option>
-        <option value="hi-IN">🎙 हिन्दी</option>
+        <option value="en-US">🌐 English</option>
+        <option value="ur-PK">🌐 اردو</option>
+        <option value="hi-IN">🌐 हिन्दी</option>
       </select>
     </header>
 
@@ -250,11 +279,11 @@ textarea {
 
     <div class="composer">
       <div class="box">
-        <textarea id="input" rows="1" dir="auto" placeholder="AI 53 se kuch bhi poochein..."></textarea>
+        <textarea id="input" rows="1" dir="auto" placeholder="AI se kuch bhi poochhein..."></textarea>
         <button class="rb" id="micBtn" title="Voice input">🎙️</button>
         <button class="rb" id="sendBtn" title="Send">➤</button>
       </div>
-      <div class="note">AI 53 galti bhi kar sakta hai. Zaroori maloomat dobara check karein.</div>
+      <div class="note">🛡 AI 53 aapki har tarah ki madad ke liye yahan hai. Zaroori maloomat dobara check karein.</div>
     </div>
   </main>
 </div>
@@ -269,10 +298,10 @@ textarea {
   const sendBtn = $("#sendBtn"), micBtn = $("#micBtn");
   const KEY = "ai53_chats_v2", CUR = "ai53_current_v2";
   const SUGGESTIONS = [
-    "Mujhe Python seekhne ka plan banakar do",
-    "Ek chhoti si kahani sunao",
-    "Professional email likhne mein meri madad karo",
-    "Mere JavaScript code ka bug dhoondo"
+    { i: "✦", t: "Mujhe Python code kaise likhna hai?" },
+    { i: "💡", t: "Ek chhota sa kahani sunao" },
+    { i: "📊", t: "Professional email likhne mein madad karo" },
+    { i: "🎨", t: "Mere liye creative design banayein" }
   ];
 
   let chats = [];
@@ -399,11 +428,18 @@ textarea {
   function welcome() {
     const d = document.createElement("div");
     d.className = "welcome";
-    d.innerHTML = '<div class="orb"></div><h1>AI 53</h1><p>Main aapki kaise madad kar sakta hoon?</p><div class="chips"></div>';
+    d.innerHTML =
+      '<div class="planet"><div class="orb"></div><div class="ring"></div></div>' +
+      '<h1>AI <span>53</span></h1>' +
+      '<p>Main aapki kaise <b>madad</b> kar sakta hoon?</p>' +
+      '<div class="uline"></div><div class="chips"></div>';
     const chips = d.querySelector(".chips");
     SUGGESTIONS.forEach(s => {
       const b = document.createElement("button");
-      b.textContent = s; b.onclick = () => send(s);
+      b.innerHTML = '<span class="ic"></span><span class="t"></span><span class="arr">→</span>';
+      b.querySelector(".ic").textContent = s.i;
+      b.querySelector(".t").textContent = s.t;
+      b.onclick = () => send(s.t);
       chips.appendChild(b);
     });
     return d;
@@ -420,6 +456,13 @@ textarea {
   function renderList() {
     const list = $("#chatList");
     list.innerHTML = "";
+    if (!chats.length) {
+      const e = document.createElement("div");
+      e.className = "empty-hist";
+      e.textContent = "🕘 Abhi koi chat history nahi...";
+      list.appendChild(e);
+      return;
+    }
     [...chats].sort((a, b) => b.updated - a.updated).forEach(c => {
       const item = document.createElement("div");
       item.className = "chat-item" + (c.id === currentId ? " active" : "");
