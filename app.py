@@ -652,13 +652,23 @@ def chat():
 
             # Internet search ki zaroorat check karo
             search_words = [
+                # English
                 "search", "internet", "latest", "today",
-                "news", "current", "price", "weather",
-                "website", "online", "recent", "2026",
-                "google", "find", "look up",
-                "search karo", "internet se", "aaj ki",
-                "taza khabar", "latest news", "rate kya",
-                "price kya", "maloomat dhoondo"
+                "current", "news", "price", "weather",
+                "recent", "update", "updates", "2026",
+                "right now", "at the moment",
+                "live", "breaking", "release", "launched",
+                "exchange rate", "stock price",
+
+                # Roman Urdu
+                "aaj", "abhi", "taaza", "taza",
+                "khabar", "qeemat", "keemat",
+                "kitne ka", "kitni hai", "rate kya",
+                "price kya", "naya update",
+                "nayi khabar", "kya hua",
+                "maloomat dhoondo", "pata karo",
+                "internet se", "search karo",
+                "check karo", "dhoond kar batao"
             ]
 
             system_prompt = SYSTEM_PROMPT
