@@ -1,3 +1,4 @@
 flask
 google-genai
 gunicorn
+byteplus-python-sdk-v2
